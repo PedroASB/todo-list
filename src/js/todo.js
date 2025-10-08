@@ -12,11 +12,14 @@ export class Todo {
     }
 
     static getPriorityColor(priority) {
+        /* Open-closed principle: the following switch-case can be extended
+        to support other/more/less priorities. Modules from outside don't need to 
+        know how many priorities are there; thus, they won't need to be modified. */
         switch (priority) {
             case 1: return "#67c96cff";
             case 2: return "#e2c062ff";
             case 3: return "#f07b7bff";
-            default: return null; // Error
+            default: return null;
         }
     }
 

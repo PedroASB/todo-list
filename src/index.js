@@ -13,7 +13,7 @@ function retrieveFormData(formSelector) {
 }
 
 function addNewTodo() {
-    const formData = retrieveFormData("#new-todo form");
+    const formData = retrieveFormData("#new-todo-form");
     let title, description, priority, dueDate;
 
     title = formData.get("title") || "[Empty title]";
@@ -27,9 +27,33 @@ function addNewTodo() {
     appendTodo(todo);
 }
 
+function addSampleTodos() {
+    let sampleTodos = [];
+
+    sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - next to the shopping mall.", 3, DateManager.getCurrentDate()));
+    sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, DateManager.getCurrentDate()));
+    sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, DateManager.getCurrentDate()));
+
+    sampleTodos.forEach((todo) => {
+        appendTodo(todo);
+    });
+}
+
 function initializePage() {
-    const addButton = document.querySelector("#add-button");
-    addButton.addEventListener("click", addNewTodo);
+    const addTodoButton = document.querySelector("#add-todo");
+    const newTodoDialog = document.querySelector("#new-todo-dialog");
+
+    addTodoButton.addEventListener("click", () => {
+        newTodoDialog.showModal();
+    });
+
+    newTodoDialog.addEventListener("close", () => {
+        if (newTodoDialog.returnValue === "confirm") {
+            addNewTodo();
+        }
+    });
+
+    addSampleTodos();
 }
 
 initializePage();
