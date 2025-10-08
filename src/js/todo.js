@@ -40,13 +40,13 @@ export class Todo {
     }
 
     getDueDate() {
-        return this.#dueDate;
+        return new Date(this.#dueDate);
     }
 
     setDueDate(date) {
         if (!(date instanceof Date)) {
             return; // Error
         }
-        this.#dueDate = date;
+        this.#dueDate = date.toISOString();
     }
 }

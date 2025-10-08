@@ -3,6 +3,7 @@ import "./css/style.css";
 import { Todo } from "./js/todo";
 import { Project } from "./js/project";
 import { appendTodo } from "./js/dom-manager";
+import { DateManager } from "./js/date-manager";
 
 function retrieveFormData(formSelector) {
     const form = document.querySelector(formSelector);
@@ -18,8 +19,10 @@ function addNewTodo() {
     title = formData.get("title") || "[Empty title]";
     description = formData.get("description") || "[Edit to enter a description]";
     priority = +formData.get("priority") || 1;
-    dueDate = formData.get("date") || "2025-10-15"; // Temporary fallback date
-
+    dueDate = formData.get("date") ? 
+              DateManager.getDateFromString(formData.get("date")) : 
+              DateManager.getCurrentDate();
+    
     const todo = new Todo(title, description, priority, dueDate);
     appendTodo(todo);
 }

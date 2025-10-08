@@ -4,6 +4,7 @@ import collapseIcon from "../assets/icons/collapse-icon.svg";
 import editIcon from "../assets/icons/edit-icon.svg";
 import deleteIcon from "../assets/icons/delete-icon.svg";
 import { Todo } from "./todo";
+import { DateManager } from "./date-manager";
 
 export function toggleDetails(todoElement) {
     const detailsDiv = todoElement.querySelector(".details");
@@ -40,7 +41,7 @@ export function appendTodo(todo) {
     todoElement.querySelector(".title").innerText = todo.title;
     todoElement.querySelector(".tag").style.backgroundColor = Todo.getPriorityColor(todo.getPriority());
     todoElement.querySelector(".description").innerText = todo.description;
-    todoElement.querySelector(".date span").innerText = todo.getDueDate();
+    todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
     todoElement.querySelector(".details").style.display = "none";
 
     // Event Listeners
@@ -48,7 +49,7 @@ export function appendTodo(todo) {
         () => { toggleDetails(todoElement); }
     );
     todoElement.querySelector(".delete-icon").addEventListener("click", 
-        () => { todoElement.remove() }
+        () => { todoElement.remove(); }
     );
 
     todoList.appendChild(todoElement);
