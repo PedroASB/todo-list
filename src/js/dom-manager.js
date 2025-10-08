@@ -25,6 +25,11 @@ export function toggleDetails(dataId) {
     }
 }
 
+export function deleteTodo(dataId) {
+    const todo = document.querySelector(`.todo[data-id="${dataId}"]`);
+    todo.remove();
+}
+
 export function appendTodo(title, description, priority, dueDate, dataId) {
     const todoList = document.querySelector("#todo-list");
     const todoTemplate = document.querySelector("#todo-template");
@@ -46,9 +51,11 @@ export function appendTodo(title, description, priority, dueDate, dataId) {
 
     // Event Listeners
     todoDiv.querySelector(".expand-collapse-icon").addEventListener("click", 
-        () => toggleDetails(dataId)
+        () => { toggleDetails(dataId); }
+    );
+    todoDiv.querySelector(".delete-icon").addEventListener("click", 
+        () => { deleteTodo(dataId); }
     );
 
     todoList.appendChild(todoDiv);
 }
-
