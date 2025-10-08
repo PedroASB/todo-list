@@ -21,7 +21,7 @@ function addNewTodo() {
     dueDate = formData.get("date") || "2025-10-15"; // Temporary fallback date
 
     const todo = new Todo(title, description, priority, dueDate);
-    appendTodo(title, description, priority, dueDate, todo.getId());
+    appendTodo(todo);
 }
 
 function initializePage() {

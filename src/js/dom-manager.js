@@ -5,10 +5,9 @@ import editIcon from "../assets/icons/edit-icon.svg";
 import deleteIcon from "../assets/icons/delete-icon.svg";
 import { Todo } from "./todo";
 
-export function toggleDetails(dataId) {
-    const todo = document.querySelector(`.todo[data-id="${dataId}"]`);
-    const detailsDiv = todo.querySelector(".details");
-    const togglerIcon = todo.querySelector(".expand-collapse-icon");
+export function toggleDetails(todoElement) {
+    const detailsDiv = todoElement.querySelector(".details");
+    const togglerIcon = todoElement.querySelector(".expand-collapse-icon");
 
     switch (detailsDiv.style.display) {
         case "none":
@@ -25,37 +24,32 @@ export function toggleDetails(dataId) {
     }
 }
 
-export function deleteTodo(dataId) {
-    const todo = document.querySelector(`.todo[data-id="${dataId}"]`);
-    todo.remove();
-}
-
-export function appendTodo(title, description, priority, dueDate, dataId) {
+export function appendTodo(todo) {
     const todoList = document.querySelector("#todo-list");
     const todoTemplate = document.querySelector("#todo-template");
-    const todoDiv = todoTemplate.content.cloneNode(true).querySelector(".todo");
+    const todoElement = todoTemplate.content.cloneNode(true).querySelector(".todo");
 
     // Icons
-    todoDiv.querySelector(".expand-collapse-icon").src = expandIcon;
-    todoDiv.querySelector(".edit-icon").src = editIcon;
-    todoDiv.querySelector(".delete-icon").src = deleteIcon;
-    todoDiv.querySelector(".calendar-icon").src = calendarIcon;
+    todoElement.querySelector(".expand-collapse-icon").src = expandIcon;
+    todoElement.querySelector(".edit-icon").src = editIcon;
+    todoElement.querySelector(".delete-icon").src = deleteIcon;
+    todoElement.querySelector(".calendar-icon").src = calendarIcon;
 
     // Fields and attributes
-    todoDiv.setAttribute("data-id", dataId);
-    todoDiv.querySelector(".title").innerText = title;
-    todoDiv.querySelector(".tag").style.backgroundColor = Todo.getPriorityColor(priority);
-    todoDiv.querySelector(".description").innerText = description;
-    todoDiv.querySelector(".date span").innerText = dueDate;
-    todoDiv.querySelector(".details").style.display = "none";
+    todoElement.setAttribute("data-id", todo.getId());
+    todoElement.querySelector(".title").innerText = todo.title;
+    todoElement.querySelector(".tag").style.backgroundColor = Todo.getPriorityColor(todo.getPriority());
+    todoElement.querySelector(".description").innerText = todo.description;
+    todoElement.querySelector(".date span").innerText = todo.getDueDate();
+    todoElement.querySelector(".details").style.display = "none";
 
     // Event Listeners
-    todoDiv.querySelector(".expand-collapse-icon").addEventListener("click", 
-        () => { toggleDetails(dataId); }
+    todoElement.querySelector(".expand-collapse-icon").addEventListener("click", 
+        () => { toggleDetails(todoElement); }
     );
-    todoDiv.querySelector(".delete-icon").addEventListener("click", 
-        () => { deleteTodo(dataId); }
+    todoElement.querySelector(".delete-icon").addEventListener("click", 
+        () => { todoElement.remove() }
     );
 
-    todoList.appendChild(todoDiv);
+    todoList.appendChild(todoElement);
 }
