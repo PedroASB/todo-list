@@ -57,7 +57,7 @@ body {
     font-weight: 600;
 }
 
-#new-todo-dialog {
+.todo-dialog {
     position: absolute;
     margin: auto;
     padding: 24px;
@@ -81,18 +81,18 @@ body {
     }
 }
 
-#new-todo-dialog form {
+.todo-form {
     display: flex;
     flex-direction: column;
     gap: 8px;
     align-items: center;
 
-    #todo-description {
+    .todo-description {
         grid-row-start: 2;
         resize: none;
     }
 
-    fieldset#priority-radios {
+    fieldset.priority-radios {
         border: none;
         display: flex;
         justify-content: space-between;
@@ -108,17 +108,17 @@ body {
             border: 2px solid black;
         }
         
-        .radio[for="todo-priority-1"] {
+        .radio[for="add-todo-priority-1"], .radio[for="edit-todo-priority-1"] {
             border-color: #67c96cff;
             accent-color: #29a72f;
         }
 
-        .radio[for="todo-priority-2"] {
+        .radio[for="add-todo-priority-2"], .radio[for="edit-todo-priority-2"] {
             border-color: #e2c062ff;
             accent-color: #978041;;
         }
 
-        .radio[for="todo-priority-3"] {
+        .radio[for="add-todo-priority-3"], .radio[for="edit-todo-priority-3"] {
             border-color: #f07b7bff;
             accent-color: #b95353;
         }
@@ -133,7 +133,7 @@ body {
     }
 
 
-    label[for="todo-date"] {
+    label[for="add-todo-date"], label[for="edit-todo-date"] {
         width: 80%;
         display: flex;
         align-items: center;
@@ -163,7 +163,7 @@ body {
             color: #4e4e4e;
         }
         
-        button#confirm-add-todo {
+        button[value="confirm"] {
             background-color: var(--primary-color);
             color: var(--font-color-white);
     

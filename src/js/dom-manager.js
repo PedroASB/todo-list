@@ -6,6 +6,13 @@ import deleteIcon from "../assets/icons/delete-icon.svg";
 import { Todo } from "./todo";
 import { DateManager } from "./date-manager";
 
+export function retrieveFormData(formSelector) {
+    const form = document.querySelector(formSelector);
+    const formData = new FormData(form);
+    form.reset();
+    return formData;
+}
+
 export function toggleDetails(todoElement) {
     const detailsDiv = todoElement.querySelector(".details");
     const togglerIcon = todoElement.querySelector(".expand-collapse-icon");
@@ -23,6 +30,15 @@ export function toggleDetails(todoElement) {
             detailsDiv.style.display = "none";
             break;
     }
+}
+
+export function editTodo(todo) {
+    const todoElement = document.querySelector(`.todo[data-id="${todo.getId()}"]`);
+
+    todoElement.querySelector(".title").innerText = todo.title;
+    todoElement.querySelector(".tag").style.backgroundColor = Todo.getPriorityColor(todo.getPriority());
+    todoElement.querySelector(".description").innerText = todo.description;
+    todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
 }
 
 export function appendTodo(todo) {
@@ -48,9 +64,23 @@ export function appendTodo(todo) {
     todoElement.querySelector(".expand-collapse-icon").addEventListener("click", 
         () => { toggleDetails(todoElement); }
     );
+    
     todoElement.querySelector(".delete-icon").addEventListener("click", 
         () => { todoElement.remove(); }
     );
+
+    todoElement.querySelector(".edit-icon").addEventListener("click", () => {
+        const form = document.querySelector("#edit-todo-form");
+        const editTodoDialog = document.querySelector("#edit-todo-dialog");
+
+        form.elements.title.value = todo.title;
+        form.elements.description.value = todo.description;
+        form.elements.priority[todo.getPriority() - 1].checked = true;
+        form.elements.date.value = DateManager.formatDate(todo.getDueDate(), "yyyy-MM-dd");
+
+        editTodoDialog.triggerElement = todoElement;
+        editTodoDialog.showModal();
+    });
 
     todoList.appendChild(todoElement);
 }
