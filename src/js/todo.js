@@ -11,6 +11,15 @@ export class Todo {
         this.setDueDate(dueDate);
     }
 
+    static getPriorityColor(priority) {
+        switch (priority) {
+            case 1: return "#67c96cff";
+            case 2: return "#e2c062ff";
+            case 3: return "#f07b7bff";
+            default: return null; // Error
+        }
+    }
+
     toggleComplete() {
         this.#complete = !this.#complete;
     }
