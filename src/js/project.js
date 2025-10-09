@@ -36,7 +36,7 @@ export class Project {
         return id in this.#todoList ? this.#todoList[id] : null;
     }
 
-    removeTodo(id) {
+    deleteTodo(id) {
         delete this.#todoList[id];
         this.#size--;
     }

@@ -12,6 +12,8 @@ class Application {
 
     constructor(defaultProject, addSampleTodosFlag=false) {
         this.#defaultProject = defaultProject;
+        appendProject(this.#defaultProject);
+        this.#projects[this.#defaultProject.getId()] = this.#defaultProject;
         this.#addSampleTodosFlag = addSampleTodosFlag;
     }
 
