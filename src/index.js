@@ -9,12 +9,13 @@ class Application {
     #projects = {};
     #addSampleTodosFlag;
     #defaultProject;
+    #sampleTodos;
 
-    constructor(defaultProject, addSampleTodosFlag=false) {
+    constructor(defaultProject, sampleTodos=null) {
         this.#defaultProject = defaultProject;
         appendProject(this.#defaultProject);
         this.#projects[this.#defaultProject.getId()] = this.#defaultProject;
-        this.#addSampleTodosFlag = addSampleTodosFlag;
+        this.#sampleTodos = sampleTodos;
     }
 
     handleAddTodo(project) {
@@ -61,13 +62,11 @@ class Application {
     }
 
     addSampleTodos(project) {
-        let sampleTodos = [];
+        if (!this.#sampleTodos) {
+            return; // Error
+        }
 
-        sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - next to the shopping mall.", 3, DateManager.getCurrentDate()));
-        sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, DateManager.getCurrentDate()));
-        sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, DateManager.getCurrentDate()));
-
-        sampleTodos.forEach((todo) => {
+        this.#sampleTodos.forEach((todo) => {
             appendTodo(todo);
             project.addTodo(todo);
         });
@@ -110,12 +109,17 @@ class Application {
     initializePage() {
         this.initializeEventListeners();
 
-        if (this.#addSampleTodosFlag) {
+        if (this.#sampleTodos) {
             this.addSampleTodos(this.#defaultProject);
         }
     }
 }
 
 const defaultProject = new Project("My Tasks");
-const application = new Application(defaultProject, true);
+let sampleTodos = [];
+sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - next to the shopping mall.", 3, DateManager.getCurrentDate()));
+sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, DateManager.getCurrentDate()));
+sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, DateManager.getCurrentDate()));
+
+const application = new Application(defaultProject, sampleTodos);
 application.initializePage();
