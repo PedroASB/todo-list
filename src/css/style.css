@@ -115,7 +115,7 @@ body {
     }
 }
 
-#todo-list {
+#todos {
     min-height: 600px;
     min-width: 800px;
     margin: 8px 0;
@@ -137,6 +137,13 @@ body {
         margin-bottom: 16px;
         margin-left: 64px;
     }
+
+}
+
+#todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .todo {

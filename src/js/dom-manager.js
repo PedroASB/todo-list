@@ -43,7 +43,7 @@ export function editTodo(todo) {
 }
 
 export function appendTodo(todo) {
-    const todoList = document.querySelector("#todo-list");
+    const todoListDiv = document.querySelector("#todo-list");
     const todoTemplate = document.querySelector("#todo-template");
     const todoElement = todoTemplate.content.cloneNode(true).querySelector(".todo");
 
@@ -83,7 +83,20 @@ export function appendTodo(todo) {
         editTodoDialog.showModal();
     });
 
-    todoList.appendChild(todoElement);
+    todoListDiv.appendChild(todoElement);
+}
+
+export function displayProject(project) {
+    const projectNameDiv = document.querySelector("#project-name");
+    const todoListDiv = document.querySelector("#todo-list");
+    const todoList = project.getTodoList();
+
+    projectNameDiv.innerText = project.name;
+    todoListDiv.innerHTML = "";
+
+    for (const [_, todo] of Object.entries(todoList)) {
+        appendTodo(todo);
+    }   
 }
 
 export function appendProject(project) {
@@ -94,4 +107,6 @@ export function appendProject(project) {
     projectElement.innerHTML = `<span>${project.name}</span>`;
 
     projectsSection.appendChild(projectElement);
+
+    return projectElement;
 }

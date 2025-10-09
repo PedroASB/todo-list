@@ -2,18 +2,19 @@ import "./css/reset.css";
 import "./css/style.css";
 import { Todo } from "./js/todo";
 import { Project } from "./js/project";
-import { appendTodo, retrieveFormData, editTodo, appendProject } from "./js/dom-manager";
+import { appendTodo, retrieveFormData, editTodo, appendProject, displayProject } from "./js/dom-manager";
 import { DateManager } from "./js/date-manager";
 
 class Application {
     #projects = {};
     #defaultProject;
     #sampleTodos;
+    #currentProject;
 
     constructor(defaultProject, sampleTodos=null) {
         this.#defaultProject = defaultProject;
-        appendProject(this.#defaultProject);
-        this.#projects[this.#defaultProject.getId()] = this.#defaultProject;
+        this.handleAddProject(defaultProject);
+        this.#currentProject = defaultProject;
         this.#sampleTodos = sampleTodos;
     }
 
@@ -63,12 +64,20 @@ class Application {
         editTodo(todo);
     }
 
-    handleAddProject() {
-        const formData = retrieveFormData("form#add-project-form");
-        let name = formData.get("name");
-        const project = new Project(name);
-        appendProject(project);
+    handleAddProject(project=null) {
+        if (project === null) {
+            const formData = retrieveFormData("form#add-project-form");
+            let name = formData.get("name");
+            project = new Project(name);
+        }
+
+        const projectElement = appendProject(project);
         this.#projects[project.getId()] = project;
+
+        projectElement.addEventListener("click", () => {
+            this.#currentProject = project;
+            displayProject(project);
+        });
     }
 
     configureEventListeners() {
@@ -88,7 +97,7 @@ class Application {
 
         addTodoDialog.addEventListener("close", () => {
             if (addTodoDialog.returnValue === "confirm") {
-                this.handleAddTodo(defaultProject);
+                this.handleAddTodo(this.#currentProject);
             }
         });
 
@@ -100,7 +109,7 @@ class Application {
 
         editTodoDialog.addEventListener("close", () => {
             if (editTodoDialog.returnValue === "confirm") {
-                this.handleEditTodo(defaultProject, editTodoDialog.triggerElement.dataset.id);
+                this.handleEditTodo(this.#currentProject, editTodoDialog.triggerElement.dataset.id);
             }
         });
     }
