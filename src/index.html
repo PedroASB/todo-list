@@ -8,7 +8,10 @@
 <body>
     <h1 id="main-title">Todo List</h1>
     <div id="main-content">
-        <h2 id="project-name">My Tasks</h2>
+        <h2 id="project-name">
+            <span></span>
+            <img src="./assets/icons/edit-icon-lighter.svg" alt="Edit Project" class="edit-icon icon" id="edit-project">
+        </h2>
         <div id="projects" class="section">
             <h3 class="section-title">Projects</h3>
             <button type="button" id="add-project" class="add-button"><div class="plus">+</div><span>Add project</span></button>
@@ -113,6 +116,18 @@
             <div class="buttons">
                 <button type="submit" value="cancel" formnovalidate>Cancel</button>
                 <button type="submit" value="confirm">Add</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="edit-project-dialog" class="project-dialog">
+        <form method="dialog" id="edit-project-form" class="project-form">
+            <h3>Edit Project</h3>
+            <input type="text" name="name" id="edit-project-name" maxlength="30" placeholder="New project name" required>
+            <div class="buttons">
+                <button type="submit" value="cancel" formnovalidate>Cancel</button>
+                <button type="submit" value="delete" formnovalidate>Delete</button>
+                <button type="submit" value="confirm">Done</button>
             </div>
         </form>
     </dialog>

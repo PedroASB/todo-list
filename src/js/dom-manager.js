@@ -42,6 +42,16 @@ export function editTodo(todo) {
     todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
 }
 
+export function editProject(project) {
+    const projectElementSpan = document.querySelector(`.project[data-id="${project.getId()}"] span`);
+    projectElementSpan.innerText = project.name;
+}
+
+export function deleteProjectFromDOM(project) {
+    const projectElement = document.querySelector(`.project[data-id="${project.getId()}"]`);
+    projectElement.remove();
+}
+
 export function appendTodo(todo) {
     const todoListDiv = document.querySelector("#todo-list");
     const todoTemplate = document.querySelector("#todo-template");
@@ -87,11 +97,11 @@ export function appendTodo(todo) {
 }
 
 export function displayProject(project) {
-    const projectNameDiv = document.querySelector("#project-name");
+    const projectNameSpan = document.querySelector("#project-name span");
     const todoListDiv = document.querySelector("#todo-list");
     const todoList = project.getTodoList();
 
-    projectNameDiv.innerText = project.name;
+    projectNameSpan.innerText = project.name;
     todoListDiv.innerHTML = "";
 
     for (const [_, todo] of Object.entries(todoList)) {
@@ -105,6 +115,7 @@ export function appendProject(project) {
     projectElement.classList.add("project", "card");
 
     projectElement.innerHTML = `<span>${project.name}</span>`;
+    projectElement.setAttribute("data-id", project.getId());
 
     projectsSection.appendChild(projectElement);
 

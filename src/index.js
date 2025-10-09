@@ -2,7 +2,7 @@ import "./css/reset.css";
 import "./css/style.css";
 import { Todo } from "./js/todo";
 import { Project } from "./js/project";
-import { appendTodo, retrieveFormData, editTodo, appendProject, displayProject } from "./js/dom-manager";
+import { appendTodo, retrieveFormData, editTodo, appendProject, displayProject, editProject, deleteProjectFromDOM } from "./js/dom-manager";
 import { DateManager } from "./js/date-manager";
 
 class Application {
@@ -24,9 +24,10 @@ class Application {
         }
 
         this.#sampleTodos.forEach((todo) => {
-            appendTodo(todo);
             project.addTodo(todo);
         });
+
+        displayProject(project);
     }
 
     handleAddTodo(project) {
@@ -67,7 +68,7 @@ class Application {
     handleAddProject(project=null) {
         if (project === null) {
             const formData = retrieveFormData("form#add-project-form");
-            let name = formData.get("name");
+            let name = formData.get("name") || "[Empty name]";
             project = new Project(name);
         }
 
@@ -80,25 +81,44 @@ class Application {
         });
     }
 
+    handleEditProject(project) {
+        const formData = retrieveFormData("#edit-project-form");
+        let name = formData.get("name") || "[Empty name]";
+        project.name = name;
+        editProject(project);
+        displayProject(project);
+    }
+
+    handleDeleteProject(project) {
+        deleteProjectFromDOM(project);
+        delete this.#projects[project.getId()];
+
+        // Switch to some other project if exists
+        const someProject = Object.values(this.#projects)[0];
+        if (someProject) displayProject(someProject);
+    }
+
     configureEventListeners() {
         const addTodoButton = document.querySelector("#add-todo");
-        const addProjectButton = document.querySelector("#add-project");
         const addTodoDialog = document.querySelector("#add-todo-dialog");
-        const editTodoDialog = document.querySelector("#edit-todo-dialog");
+        const addProjectButton = document.querySelector("#add-project");
         const addProjectDialog = document.querySelector("#add-project-dialog");
+        const editTodoDialog = document.querySelector("#edit-todo-dialog");
+        const editProjectButton = document.querySelector("#edit-project");
+        const editProjectDialog = document.querySelector("#edit-project-dialog");
         
         addTodoButton.addEventListener("click", () => {
             addTodoDialog.showModal();
         });
-
-        addProjectButton.addEventListener("click", () => {
-            addProjectDialog.showModal();
-        });
-
+        
         addTodoDialog.addEventListener("close", () => {
             if (addTodoDialog.returnValue === "confirm") {
                 this.handleAddTodo(this.#currentProject);
             }
+        });
+    
+        addProjectButton.addEventListener("click", () => {
+            addProjectDialog.showModal();
         });
 
         addProjectDialog.addEventListener("close", () => {
@@ -110,6 +130,25 @@ class Application {
         editTodoDialog.addEventListener("close", () => {
             if (editTodoDialog.returnValue === "confirm") {
                 this.handleEditTodo(this.#currentProject, editTodoDialog.triggerElement.dataset.id);
+            }
+        });
+
+        editProjectButton.addEventListener("click", () => {
+            const form = document.querySelector("#edit-project-form");
+            form.elements.name.value = this.#currentProject.name;
+            editProjectDialog.showModal();
+        });
+
+        editProjectDialog.addEventListener("close", () => {
+            if (editProjectDialog.returnValue === "confirm") {
+                this.handleEditProject(this.#currentProject);
+            }
+            if (editProjectDialog.returnValue === "delete") {
+                if (Object.keys(this.#projects).length > 1) {
+                    this.handleDeleteProject(this.#currentProject);
+                } else {
+                    window.alert("You must keep at least one project.");
+                }
             }
         });
     }
