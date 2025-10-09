@@ -2,12 +2,11 @@ import "./css/reset.css";
 import "./css/style.css";
 import { Todo } from "./js/todo";
 import { Project } from "./js/project";
-import { appendTodo, setAddTodoDialog, retrieveFormData, editTodo, appendProject } from "./js/dom-manager";
+import { appendTodo, retrieveFormData, editTodo, appendProject } from "./js/dom-manager";
 import { DateManager } from "./js/date-manager";
 
 class Application {
     #projects = {};
-    #addSampleTodosFlag;
     #defaultProject;
     #sampleTodos;
 
@@ -16,6 +15,17 @@ class Application {
         appendProject(this.#defaultProject);
         this.#projects[this.#defaultProject.getId()] = this.#defaultProject;
         this.#sampleTodos = sampleTodos;
+    }
+
+    addSampleTodos(project) {
+        if (!this.#sampleTodos) {
+            return; // Error
+        }
+
+        this.#sampleTodos.forEach((todo) => {
+            appendTodo(todo);
+            project.addTodo(todo);
+        });
     }
 
     handleAddTodo(project) {
@@ -61,18 +71,7 @@ class Application {
         this.#projects[project.getId()] = project;
     }
 
-    addSampleTodos(project) {
-        if (!this.#sampleTodos) {
-            return; // Error
-        }
-
-        this.#sampleTodos.forEach((todo) => {
-            appendTodo(todo);
-            project.addTodo(todo);
-        });
-    }
-
-    initializeEventListeners() {
+    configureEventListeners() {
         const addTodoButton = document.querySelector("#add-todo");
         const addProjectButton = document.querySelector("#add-project");
         const addTodoDialog = document.querySelector("#add-todo-dialog");
@@ -106,8 +105,8 @@ class Application {
         });
     }
 
-    initializePage() {
-        this.initializeEventListeners();
+    initialize() {
+        this.configureEventListeners();
 
         if (this.#sampleTodos) {
             this.addSampleTodos(this.#defaultProject);
@@ -115,11 +114,14 @@ class Application {
     }
 }
 
+
+// Start application
 const defaultProject = new Project("My Tasks");
 let sampleTodos = [];
+
 sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - next to the shopping mall.", 3, DateManager.getCurrentDate()));
 sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, DateManager.getCurrentDate()));
 sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, DateManager.getCurrentDate()));
 
 const application = new Application(defaultProject, sampleTodos);
-application.initializePage();
+application.initialize();
