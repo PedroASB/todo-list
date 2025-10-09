@@ -10,7 +10,7 @@
                  "Segoe UI Symbol",
                  "Noto Color Emoji";
     --font-color-white: #fff;
-    --font-color-black: #202020;
+    --font-color-black: #292929;
     --font-color-black-lighter: #3b3939;
     --primary-color: #748ae6;
     --primary-color-darker: #625fad;
@@ -18,6 +18,7 @@
     --primary-color-hover-lighter: #90a4f338;
     --section-bg-color: #F3F3F8;
     --card-bg-color: #fff;
+    --card-bg-color-hover: var(--primary-color-hover-lighter);
     --backdrop-color: rgba(67, 66, 105, 0.75);
 }
 
@@ -30,6 +31,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 30px;
 }
 
 #main-title {
@@ -40,21 +42,166 @@ body {
 }
 
 #main-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
+    display: grid;
+    grid-template-columns: fit-content 1fr;
+    grid-template-rows: fit-content 1fr;
+    gap: 16px 32px;
 
     .section {
         background-color: var(--section-bg-color);
         color: var(--font-color-black);
         border-radius: 8px;
     }
+
+    .section-title {
+        color: var(--font-color-black-lighter);
+        color: var(--primary-color);
+        font-weight: 900;
+        text-align: center;
+        border-bottom: 2px dotted currentColor;
+    }
 }
 
 #project-name {
     font-size: 2rem;
     font-weight: 600;
+    grid-column-start: 2;
+    justify-self: center;
+}
+
+#projects {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 32px;
+    min-width: 300px;
+    min-height: 80%;
+    justify-self: end;
+    align-self: center;
+    gap: 16px;
+
+    .section-title {
+        font-size: 1.5rem;
+        width: 10ch;
+        padding-bottom: 4px;
+    }
+
+    button#add-project {
+        align-self: flex-start;
+        margin-bottom: 8px;
+        margin-top: 16px;
+    }
+
+    .project.card {
+        display: flex;
+        width: 100%;
+        background-color: var(--card-bg-color);
+        padding: 8px 16px;
+        box-shadow: 1px 7px 9px -5px rgba(0,0,0,0.27);
+        font-weight: 500;
+        border-left: 8px solid var(--primary-color);
+
+        &:hover {
+            background-color: var(--card-bg-color-hover);
+            cursor: pointer;
+        }
+    }
+}
+
+#todo-list {
+    min-height: 600px;
+    min-width: 800px;
+    margin: 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    gap: 16px;
+
+    .section-title {
+        font-size: 1.75rem;
+        margin-bottom: 16px;
+        width: 10ch;
+        padding-bottom: 2px;
+    }
+
+    button#add-todo {
+        align-self: flex-start;
+        margin-bottom: 16px;
+        margin-left: 64px;
+    }
+}
+
+.todo {
+    display: flex;
+
+    .tag {
+        width: 40px;
+        height: 20px;
+        background-color: rgb(250, 71, 71);
+        border-radius: 8px 0px 0px 8px;
+        margin-top: 10px;
+    }
+
+}
+
+.todo .card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 600px;
+    background-color: var(--card-bg-color);
+    padding: 16px 32px;
+    box-shadow: 1px 7px 9px -5px rgba(0,0,0,0.27);
+}
+
+.todo .card .header {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    align-items: center;
+    
+    .checkbox {
+        width: 40px;
+        height: 40px;
+        accent-color: var(--primary-color);
+    }
+    
+    .main-info {
+        flex: 1;
+        
+        .title  {
+            font-size: 1.1rem;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 40ch;
+        }
+
+        .date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+    }
+
+    .icons {
+        display: flex;
+        justify-self: flex-end;
+        gap: 8px;
+    }
+}
+
+.todo .card .details {
+    display: none;
+    
+    .description {
+        color: var(--font-color-black-lighter);
+        text-wrap: wrap;
+        max-width: 100%;
+    }
 }
 
 .todo-dialog {
@@ -180,101 +327,6 @@ body {
                 background-color: #e9e9e9;
             }
         }
-    }
-}
-
-#todo-list {
-    min-height: 600px;
-    min-width: 800px;
-    margin: 8px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px;
-    gap: 16px;
-
-    .section-title {
-        color: var(--font-color-black);
-        font-weight: 600;
-        font-size: 1.75rem;
-    }
-
-    button#add-todo {
-        align-self: flex-start;
-        margin-bottom: 16px;
-        margin-left: 64px;
-    }
-}
-
-.todo {
-    display: flex;
-
-    .tag {
-        width: 40px;
-        height: 20px;
-        background-color: rgb(250, 71, 71);
-        border-radius: 8px 0px 0px 8px;
-        margin-top: 10px;
-    }
-
-}
-
-.todo .card {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 600px;
-    background-color: var(--card-bg-color);
-    padding: 16px 32px;
-    box-shadow: 1px 7px 9px -5px rgba(0,0,0,0.27);
-}
-
-.todo .card .header {
-    display: flex;
-    flex: 1;
-    gap: 16px;
-    align-items: center;
-    
-    .checkbox {
-        width: 40px;
-        height: 40px;
-        accent-color: var(--primary-color);
-    }
-    
-    .main-info {
-        flex: 1;
-        
-        .title  {
-            font-size: 1.1rem;
-            font-weight: 600;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 40ch;
-        }
-
-        .date {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.9rem;
-            line-height: 1;
-        }
-    }
-
-    .icons {
-        display: flex;
-        justify-self: flex-end;
-        gap: 8px;
-    }
-}
-
-.todo .card .details {
-    display: none;
-    
-    .description {
-        color: var(--font-color-black-lighter);
-        text-wrap: wrap;
-        max-width: 100%;
     }
 }
 

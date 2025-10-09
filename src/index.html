@@ -9,6 +9,11 @@
     <h1 id="main-title">Todo List</h1>
     <div id="main-content">
         <h2 id="project-name">My Tasks</h2>
+        <div id="projects" class="section">
+            <h3 class="section-title">Projects</h3>
+            <button type="button" id="add-project" class="add-button"><div class="plus">+</div><span>Add project</span></button>
+            <div class="project card">My Tasks</div>
+        </div>
         <div id="todo-list" class="section">
             <h3 class="section-title">Todos</h3>
             <button type="button" id="add-todo" class="add-button"><div class="plus">+</div><span>Add todo</span></button>
@@ -38,68 +43,66 @@
                 </div>
             </template>
         </div>
-
-        <dialog id="add-todo-dialog" class="todo-dialog">
-            <form method="dialog" id="add-todo-form" class="todo-form">
-                <h3>Add Todo</h3>
-                <input type="text" name="title" id="add-todo-title" maxlength="40" placeholder="Add a new task" required>
-                <textarea name="description" id="add-todo-description" class="todo-description" rows="3" cols="30" placeholder="Description" wrap="soft" maxlength="150"></textarea>
-                <fieldset id="add-priority-radios" class="priority-radios">
-                    <label for="add-todo-priority-1" class="radio">
-                        <input type="radio" name="priority" value="1" id="add-todo-priority-1" checked>
-                        <span>Priority 1</span>
-                    </label>
-                    <label for="add-todo-priority-2" class="radio">
-                        <input type="radio" name="priority" value="2" id="add-todo-priority-2">
-                        <span>Priority 2</span>
-                    </label>
-                    <label for="add-todo-priority-3" class="radio">
-                        <input type="radio" name="priority" value="3" id="add-todo-priority-3">
-                        <span>Priority 3</span>
-                    </label>
-                </fieldset>
-                <label for="add-todo-date">
-                    <span>Due date:</span>
-                    <input type="date" name="date" id="add-todo-date"  min="2025-01-01" max="2050-12-31">
-                </label>
-                <div class="buttons">
-                    <button type="submit" value="cancel" formnovalidate>Cancel</button>
-                    <button type="submit" value="confirm">Add</button>
-                </div>
-            </form>
-        </dialog>
-
-        <dialog id="edit-todo-dialog" class="todo-dialog">
-            <form method="dialog" id="edit-todo-form" class="todo-form">
-                <h3>Edit Todo</h3>
-                <input type="text" name="title" id="edit-todo-title" maxlength="40" placeholder="New task name" required>
-                <textarea name="description" id="edit-todo-description" class="todo-description" rows="3" cols="30" placeholder="Description" wrap="soft" maxlength="150"></textarea>
-                <fieldset id="edit-priority-radios" class="priority-radios">
-                    <label for="edit-todo-priority-1" class="radio">
-                        <input type="radio" name="priority" value="1" id="edit-todo-priority-1" checked>
-                        <span>Priority 1</span>
-                    </label>
-                    <label for="edit-todo-priority-2" class="radio">
-                        <input type="radio" name="priority" value="2" id="edit-todo-priority-2">
-                        <span>Priority 2</span>
-                    </label>
-                    <label for="edit-todo-priority-3" class="radio">
-                        <input type="radio" name="priority" value="3" id="edit-todo-priority-3">
-                        <span>Priority 3</span>
-                    </label>
-                </fieldset>
-                <label for="edit-todo-date">
-                    <span>Due date:</span>
-                    <input type="date" name="date" id="edit-todo-date"  min="2025-01-01" max="2050-12-31">
-                </label>
-                <div class="buttons">
-                    <button type="submit" value="cancel" formnovalidate>Cancel</button>
-                    <button type="submit" value="confirm">Done</button>
-                </div>
-            </form>
-        </dialog>
-
-
     </div>
+
+    <dialog id="add-todo-dialog" class="todo-dialog">
+        <form method="dialog" id="add-todo-form" class="todo-form">
+            <h3>Add Todo</h3>
+            <input type="text" name="title" id="add-todo-title" maxlength="40" placeholder="Add a new task" required>
+            <textarea name="description" id="add-todo-description" class="todo-description" rows="3" cols="30" placeholder="Description" wrap="soft" maxlength="150"></textarea>
+            <fieldset id="add-priority-radios" class="priority-radios">
+                <label for="add-todo-priority-1" class="radio">
+                    <input type="radio" name="priority" value="1" id="add-todo-priority-1" checked>
+                    <span>Priority 1</span>
+                </label>
+                <label for="add-todo-priority-2" class="radio">
+                    <input type="radio" name="priority" value="2" id="add-todo-priority-2">
+                    <span>Priority 2</span>
+                </label>
+                <label for="add-todo-priority-3" class="radio">
+                    <input type="radio" name="priority" value="3" id="add-todo-priority-3">
+                    <span>Priority 3</span>
+                </label>
+            </fieldset>
+            <label for="add-todo-date">
+                <span>Due date:</span>
+                <input type="date" name="date" id="add-todo-date"  min="2025-01-01" max="2050-12-31">
+            </label>
+            <div class="buttons">
+                <button type="submit" value="cancel" formnovalidate>Cancel</button>
+                <button type="submit" value="confirm">Add</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="edit-todo-dialog" class="todo-dialog">
+        <form method="dialog" id="edit-todo-form" class="todo-form">
+            <h3>Edit Todo</h3>
+            <input type="text" name="title" id="edit-todo-title" maxlength="40" placeholder="New task name" required>
+            <textarea name="description" id="edit-todo-description" class="todo-description" rows="3" cols="30" placeholder="Description" wrap="soft" maxlength="150"></textarea>
+            <fieldset id="edit-priority-radios" class="priority-radios">
+                <label for="edit-todo-priority-1" class="radio">
+                    <input type="radio" name="priority" value="1" id="edit-todo-priority-1" checked>
+                    <span>Priority 1</span>
+                </label>
+                <label for="edit-todo-priority-2" class="radio">
+                    <input type="radio" name="priority" value="2" id="edit-todo-priority-2">
+                    <span>Priority 2</span>
+                </label>
+                <label for="edit-todo-priority-3" class="radio">
+                    <input type="radio" name="priority" value="3" id="edit-todo-priority-3">
+                    <span>Priority 3</span>
+                </label>
+            </fieldset>
+            <label for="edit-todo-date">
+                <span>Due date:</span>
+                <input type="date" name="date" id="edit-todo-date"  min="2025-01-01" max="2050-12-31">
+            </label>
+            <div class="buttons">
+                <button type="submit" value="cancel" formnovalidate>Cancel</button>
+                <button type="submit" value="confirm">Done</button>
+            </div>
+        </form>
+    </dialog>
 </body>
 </html>
