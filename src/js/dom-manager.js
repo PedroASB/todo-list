@@ -4,6 +4,7 @@ import collapseIcon from "../assets/icons/collapse-icon.svg";
 import editIcon from "../assets/icons/edit-icon.svg";
 import deleteIcon from "../assets/icons/delete-icon.svg";
 import { Todo } from "./todo";
+import { Project } from "./project";
 import { DateManager } from "./date-manager";
 
 export function retrieveFormData(formSelector) {
@@ -83,4 +84,14 @@ export function appendTodo(todo) {
     });
 
     todoList.appendChild(todoElement);
+}
+
+export function appendProject(project) {
+    const projectsSection = document.querySelector("#projects");
+    const projectElement = document.createElement("div");
+    projectElement.classList.add("project", "card");
+
+    projectElement.innerHTML = `<span>${project.name}</span>`;
+
+    projectsSection.appendChild(projectElement);
 }

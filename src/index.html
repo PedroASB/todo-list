@@ -12,7 +12,7 @@
         <div id="projects" class="section">
             <h3 class="section-title">Projects</h3>
             <button type="button" id="add-project" class="add-button"><div class="plus">+</div><span>Add project</span></button>
-            <div class="project card">My Tasks</div>
+            <div class="project card"><span>My Tasks</span></div>
         </div>
         <div id="todo-list" class="section">
             <h3 class="section-title">Todos</h3>
@@ -101,6 +101,17 @@
             <div class="buttons">
                 <button type="submit" value="cancel" formnovalidate>Cancel</button>
                 <button type="submit" value="confirm">Done</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="add-project-dialog" class="project-dialog">
+        <form method="dialog" id="add-project-form" class="project-form">
+            <h3>Add Project</h3>
+            <input type="text" name="name" id="add-project-name" maxlength="30" placeholder="New project name" required>
+            <div class="buttons">
+                <button type="submit" value="cancel" formnovalidate>Cancel</button>
+                <button type="submit" value="confirm">Add</button>
             </div>
         </form>
     </dialog>

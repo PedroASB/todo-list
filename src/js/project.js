@@ -3,9 +3,14 @@ import { Todo } from "./todo";
 export class Project {
     #todoList = {};
     #size = 0;
+    #id = crypto.randomUUID();
 
     constructor(name) {
         this.name = name;
+    }
+
+    getId() {
+        return this.#id;
     }
     
     getTodoList() {

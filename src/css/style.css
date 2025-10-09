@@ -74,7 +74,7 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 24px 32px;
-    min-width: 300px;
+    min-width: 330px;
     min-height: 80%;
     justify-self: end;
     align-self: center;
@@ -100,6 +100,13 @@ body {
         box-shadow: 1px 7px 9px -5px rgba(0,0,0,0.27);
         font-weight: 500;
         border-left: 8px solid var(--primary-color);
+        
+        span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+            max-width: 25ch;
+        }
 
         &:hover {
             background-color: var(--card-bg-color-hover);
@@ -204,7 +211,7 @@ body {
     }
 }
 
-.todo-dialog {
+.todo-dialog, .project-dialog {
     position: absolute;
     margin: auto;
     padding: 24px;
@@ -221,6 +228,7 @@ body {
         font-weight: 900;
         border-bottom: 2px solid var(--primary-color);
         padding: 4px;
+        text-align: center;
     }
 
     &::backdrop {
@@ -292,12 +300,23 @@ body {
         }
     }
 
+}
+
+.todo-form, .project-form {
+    input[type="text"], textarea, input[type="date"] {
+        padding: 4px 8px;
+        width: 100%;
+        border: 2px solid #e4e4e4;
+        border-radius: 4px;
+        outline: none;
+    }
+
     .buttons {
         display: flex;
         align-items: center;
         width: 100%;
         justify-content: space-around;
-        margin-top: 16px;
+        margin-top: 32px;
         gap: 32px;
 
         button {
@@ -328,6 +347,10 @@ body {
             }
         }
     }
+}
+
+.project-form input[type="text"] {
+    min-width: 35ch;
 }
 
 button.add-button {
