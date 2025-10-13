@@ -29,6 +29,10 @@ export class Todo {
         this.#complete = !this.#complete;
     }
 
+    isComplete() {
+        return this.#complete;
+    }
+
     getId() {
         return this.#id;
     }

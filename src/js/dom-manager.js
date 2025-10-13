@@ -5,7 +5,7 @@ import editIcon from "../assets/icons/edit-icon.svg";
 import deleteIcon from "../assets/icons/delete-icon.svg";
 import { Todo } from "./todo";
 import { DateManager } from "./date-manager";
-import { deleteTodo } from "./storage-manager";
+import { deleteTodo, updateTodo } from "./storage-manager";
 
 export function retrieveFormData(formSelector) {
     const form = document.querySelector(formSelector);
@@ -70,6 +70,7 @@ export function appendTodo(todo, project) {
     todoElement.querySelector(".description").innerText = todo.description;
     todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
     todoElement.querySelector(".details").style.display = "none";
+    todoElement.querySelector("input.checkbox").checked = todo.isComplete();
 
     // Event Listeners
     todoElement.querySelector(".expand-collapse-icon").addEventListener("click", () => {
@@ -94,6 +95,11 @@ export function appendTodo(todo, project) {
 
         editTodoDialog.triggerElement = todoElement;
         editTodoDialog.showModal();
+    });
+
+    todoElement.querySelector("input.checkbox").addEventListener("click", () => {
+        todo.toggleComplete();
+        updateTodo(todo);
     });
 
     todoListDiv.appendChild(todoElement);
