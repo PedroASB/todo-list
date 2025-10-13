@@ -1,3 +1,21 @@
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../assets/fonts/OpenSans-Regular.woff2') format('woff2'),
+         url('../assets/fonts/OpenSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sour Gummy';
+    src: url('../assets/fonts/SourGummy-Black.woff2') format('woff2'),
+         url('../assets/fonts/SourGummy-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --system-ui: system-ui, 
                  "Segoe UI", 
@@ -14,6 +32,7 @@
     --font-color-black-lighter: #3b3939;
     --font-color-complete: #6d6666;
     --primary-color: #748ae6;
+    --primary-color-lighter: #899ef0;
     --primary-color-darker: #625fad;
     --primary-color-hover: #90a4f3;
     --primary-color-hover-lighter: #90a4f338;
@@ -26,21 +45,25 @@
 
 body {
     min-height: 100vh;
-    background-color: var(--primary-color-darker);
-    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-color-darker) 100%);
-    font-family: var(--system-ui);
+    background-color: var(--primary-color);
+    background: linear-gradient(90deg, var(--primary-color) 0%, #c99fd14f 100%);
+    font-family: "Open Sans", var(--system-ui);
     color: var(--font-color-white);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 30px;
 }
 
 #main-title {
     font-size: 4rem;
-    margin-top: 30px;
+    margin-top: 25px;
     margin-bottom: 50px;
     font-weight: 900;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 3px dotted var(--primary-color-lighter);
+    width: 100%;
+    font-family: "Sour Gummy", var(--system-ui);
 }
 
 #main-content {
@@ -53,8 +76,7 @@ body {
         background-color: var(--section-bg-color);
         color: var(--font-color-black);
         border-radius: 8px;
-        /* outline: 6px solid #748be6d2; */
-        /* box-shadow: 1px 7px 9px -5px rgba(0,0,0,0.27); */
+        box-shadow: 1px 7px 9px -5px rgba(0,0,0,0.3);
     }
 
     .section-title {
@@ -507,4 +529,19 @@ button.add-button {
 button, .icon {
     cursor: pointer;
     user-select: none;
+}
+
+.footer {
+    padding: 2px 0;
+    margin-top: 20px;
+    margin-bottom: 4px;
+
+    a {
+        text-decoration: none;
+        color: var(--font-color-light);
+    }
+}
+
+* {
+    /* border: 1px solid red; */
 }
