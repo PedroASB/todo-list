@@ -43,7 +43,8 @@ export class Todo {
 
     setPriority(value) {
         if (!Number.isInteger(value) || value < 1 || value > 3) {
-            return; // Error
+            console.error("Error: invalid value at setPriority function");
+            return;
         }
         this.#priority = value;
     }
@@ -54,7 +55,8 @@ export class Todo {
 
     setDueDate(date) {
         if (!(date instanceof Date)) {
-            return; // Error
+            console.error("Error: invalid date at setDueDate");
+            return;
         }
         this.#dueDate = date.toISOString();
     }

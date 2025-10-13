@@ -212,6 +212,5 @@ sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - ne
 sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, DateManager.getCurrentDate()));
 sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, DateManager.getCurrentDate()));
 
-// clearStorage();
 const application = new Application(defaultProject);
 application.initialize();

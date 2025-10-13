@@ -24,7 +24,8 @@ export class Project {
 
     addTodo(todo) {
         if (!(todo instanceof Todo)) {
-            return; // Error
+            console.error("Error: invalid todo at addTodo function");
+            return;
         }
         this.#todoList[todo.getId()] = todo;
     }
