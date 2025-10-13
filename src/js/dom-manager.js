@@ -1,4 +1,5 @@
 import calendarIcon from "../assets/icons/calendar-icon.svg";
+import calendarIconComplete from "../assets/icons/calendar-icon-complete.svg";
 import expandIcon from "../assets/icons/expand-icon.svg";
 import collapseIcon from "../assets/icons/collapse-icon.svg";
 import editIcon from "../assets/icons/edit-icon.svg";
@@ -37,7 +38,10 @@ export function editTodo(todo) {
     const todoElement = document.querySelector(`.todo[data-id="${todo.getId()}"]`);
 
     todoElement.querySelector(".title").innerText = todo.title;
-    todoElement.querySelector(".tag").style.backgroundColor = Todo.getPriorityColor(todo.getPriority());
+    Array.from(todoElement.querySelectorAll(".tag")).forEach((tag) => {
+        tag.style.backgroundColor = Todo.getPriorityColor(todo.getPriority());
+    });
+    todoElement.querySelector(".priority span").innerText = todo.getPriority();
     todoElement.querySelector(".description").innerText = todo.description;
     todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
 }
@@ -61,16 +65,21 @@ export function appendTodo(todo, project) {
     todoElement.querySelector(".expand-collapse-icon").src = expandIcon;
     todoElement.querySelector(".edit-icon").src = editIcon;
     todoElement.querySelector(".delete-icon").src = deleteIcon;
-    todoElement.querySelector(".calendar-icon").src = calendarIcon;
+    todoElement.querySelector(".calendar-icon").src = todo.isComplete() ? calendarIconComplete : calendarIcon;
 
-    // Fields and attributes
     todoElement.setAttribute("data-id", todo.getId());
     todoElement.querySelector(".title").innerText = todo.title;
-    todoElement.querySelector(".tag").style.backgroundColor = Todo.getPriorityColor(todo.getPriority());
+    Array.from(todoElement.querySelectorAll(".tag")).forEach((tag) => {
+        tag.style.backgroundColor = Todo.getPriorityColor(todo.getPriority());
+    });
+    todoElement.querySelector(".priority span").innerText = todo.getPriority();
     todoElement.querySelector(".description").innerText = todo.description;
     todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
     todoElement.querySelector(".details").style.display = "none";
-    todoElement.querySelector("input.checkbox").checked = todo.isComplete();
+    if (todo.isComplete()) {
+        todoElement.querySelector('input[type="checkbox"]').checked = true;
+        todoElement.classList.add("complete");
+    }
 
     // Event Listeners
     todoElement.querySelector(".expand-collapse-icon").addEventListener("click", () => {
@@ -97,9 +106,11 @@ export function appendTodo(todo, project) {
         editTodoDialog.showModal();
     });
 
-    todoElement.querySelector("input.checkbox").addEventListener("click", () => {
+    todoElement.querySelector('input[type="checkbox"]').addEventListener("click", () => {
         todo.toggleComplete();
         updateTodo(todo);
+        todoElement.classList.toggle("complete");
+        todoElement.querySelector(".calendar-icon").src = todo.isComplete() ? calendarIconComplete : calendarIcon;
     });
 
     todoListDiv.appendChild(todoElement);

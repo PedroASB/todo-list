@@ -12,12 +12,14 @@
     --font-color-white: #fff;
     --font-color-black: #292929;
     --font-color-black-lighter: #3b3939;
+    --font-color-complete: #6d6666;
     --primary-color: #748ae6;
     --primary-color-darker: #625fad;
     --primary-color-hover: #90a4f3;
     --primary-color-hover-lighter: #90a4f338;
     --section-bg-color: #F3F3F8;
     --card-bg-color: #fff;
+    --card-bg-color-complete: #ebefff;
     --card-bg-color-hover: var(--primary-color-hover-lighter);
     --backdrop-color: rgba(67, 66, 105, 0.75);
 }
@@ -161,24 +163,74 @@ body {
 .todo {
     display: flex;
 
-    .tag {
+    & > .tag {
         width: 40px;
         height: 20px;
-        background-color: rgb(250, 71, 71);
         border-radius: 8px 0px 0px 8px;
         margin-top: 10px;
     }
 
+    & > .card {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 700px;
+        background-color: var(--card-bg-color);
+        padding: 16px 16px 16px 32px;
+        box-shadow: 1px 7px 9px -5px rgba(0,0,0,0.27);
+        border: 2px solid var(--card-bg-color);
+    }
+
+    &.complete .card {
+        background-color: var(--card-bg-color-complete);
+        border-color: var(--primary-color);
+        color: var(--font-color-complete);
+
+        .main-info .title {
+            text-decoration: line-through;
+        }
+
+        .details .description {
+            color: inherit;
+        }
+    }
 }
 
-.todo .card {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 600px;
-    background-color: var(--card-bg-color);
-    padding: 16px 32px;
-    box-shadow: 1px 7px 9px -5px rgba(0,0,0,0.27);
+.todo input[type="checkbox"] {
+    accent-color: var(--primary-color);
+    background-color: #fff;
+    appearance: none;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 2.5rem;
+    border: 2px solid currentColor;
+    display: grid;
+    place-content: center;
+    border-radius: 10%;
+    outline: none;
+
+    &::before {
+        content: "";
+        width: 0.5em;
+        height: 0.5em;
+        transform: scale(0);
+        transition: 120ms transform ease-in-out;
+        box-shadow: inset 1em 1em var(--primary-color);
+        background-color: CanvasText;
+        transform-origin: bottom left;
+        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    }
+
+    &:checked::before {
+        transform: scale(1);
+    }
+
+    &:checked {
+        border-color: var(--primary-color);
+    }
 }
 
 .todo .card .header {
@@ -186,12 +238,6 @@ body {
     flex: 1;
     gap: 16px;
     align-items: center;
-    
-    .checkbox {
-        width: 40px;
-        height: 40px;
-        accent-color: var(--primary-color);
-    }
     
     .main-info {
         flex: 1;
@@ -216,12 +262,36 @@ body {
     .icons {
         display: flex;
         justify-self: flex-end;
-        gap: 8px;
+        gap: 2px;
+
+        .icon {
+            border: 2px solid transparent;
+            border-radius: 50%;
+            padding: 4px;
+            
+        }
+
+        .icon:hover {
+            border-color: #dfdff1;
+            transition: 0.05s;
+        }
     }
 }
 
 .todo .card .details {
     display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 16px;
+
+    .tag {
+        border-radius: 4px;
+        width: fit-content;
+        padding: 0 8px;
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
     
     .description {
         color: var(--font-color-black-lighter);
