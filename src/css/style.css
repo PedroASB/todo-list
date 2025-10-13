@@ -28,8 +28,9 @@
                  "Segoe UI Symbol",
                  "Noto Color Emoji";
     --font-color-white: #fff;
-    --font-color-black: #292929;
-    --font-color-black-lighter: #3b3939;
+    --font-color-black: #474747;
+    --font-color-black-darker: #161616;
+    --font-color-black-lighter: #585454;
     --font-color-complete: #6d6666;
     --primary-color: #748ae6;
     --primary-color-lighter: #899ef0;
@@ -111,9 +112,10 @@ body {
     align-items: center;
     padding: 24px 32px;
     min-width: 330px;
-    min-height: 80%;
+    min-height: 500px;
     justify-self: end;
-    align-self: center;
+    align-self: start;
+    margin: 40px 0;
     gap: 16px;
 
     .section-title {
@@ -142,6 +144,7 @@ body {
             text-overflow: ellipsis;
             text-wrap: nowrap;
             max-width: 25ch;
+            color: var(--font-color-black-darker);
         }
 
         &:hover {
@@ -179,7 +182,7 @@ body {
 #todo-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
 }
 
 .todo {
@@ -540,8 +543,4 @@ button, .icon {
         text-decoration: none;
         color: var(--font-color-light);
     }
-}
-
-* {
-    /* border: 1px solid red; */
 }
