@@ -33,8 +33,8 @@ class Application {
         const formData = retrieveFormData("form#add-todo-form");
         let title, description, priority, dueDate;
 
-        title = formData.get("title") || "[Empty title]";
-        description = formData.get("description") || "[Edit to enter a description]";
+        title = formData.get("title") || "";
+        description = formData.get("description") || "";
         priority = +formData.get("priority") || 1;
         dueDate = formData.get("date") ? 
                 DateManager.getDateFromString(formData.get("date")) : 
@@ -51,8 +51,8 @@ class Application {
         let title, description, priority, dueDate;
         const todo = project.getTodo(id);
 
-        title = formData.get("title") || "[Empty title]";
-        description = formData.get("description") || "[Edit to enter a description]";
+        title = formData.get("title") || "";
+        description = formData.get("description") || "";
         priority = +formData.get("priority") || 1;
         dueDate = formData.get("date") ? 
                 DateManager.getDateFromString(formData.get("date")) : 
@@ -69,7 +69,7 @@ class Application {
     handleAddProject(project=null) {
         if (project === null) {
             const formData = retrieveFormData("form#add-project-form");
-            let name = formData.get("name") || "[Empty name]";
+            let name = formData.get("name") || "";
             project = new Project(name);
         }
 
@@ -88,7 +88,7 @@ class Application {
 
     handleEditProject(project) {
         const formData = retrieveFormData("#edit-project-form");
-        let name = formData.get("name") || "[Empty name]";
+        let name = formData.get("name") || "";
         project.name = name;
         updateProject(project);
         editProject(project);

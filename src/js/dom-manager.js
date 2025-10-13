@@ -42,18 +42,18 @@ export function toggleDetails(todoElement) {
 export function editTodo(todo) {
     const todoElement = document.querySelector(`.todo[data-id="${todo.getId()}"]`);
 
-    todoElement.querySelector(".title").innerText = todo.title;
+    todoElement.querySelector(".title").innerText = todo.title || "[Empty title]";
     Array.from(todoElement.querySelectorAll(".tag")).forEach((tag) => {
         tag.style.backgroundColor = Todo.getPriorityColor(todo.getPriority());
     });
     todoElement.querySelector(".priority span").innerText = todo.getPriority();
-    todoElement.querySelector(".description").innerText = todo.description;
+    todoElement.querySelector(".description").innerText = todo.description || "[Edit to enter a description]";
     todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
 }
 
 export function editProject(project) {
     const projectElementSpan = document.querySelector(`.project[data-id="${project.getId()}"] span`);
-    projectElementSpan.innerText = project.name;
+    projectElementSpan.innerText = project.name || "[Empty name]";
 }
 
 export function deleteProjectFromDOM(project) {
@@ -73,12 +73,12 @@ export function appendTodo(todo, project) {
     todoElement.querySelector(".calendar-icon").src = todo.isComplete() ? calendarIconComplete : calendarIcon;
 
     todoElement.setAttribute("data-id", todo.getId());
-    todoElement.querySelector(".title").innerText = todo.title;
+    todoElement.querySelector(".title").innerText = todo.title || "[Empty title]";
     Array.from(todoElement.querySelectorAll(".tag")).forEach((tag) => {
         tag.style.backgroundColor = Todo.getPriorityColor(todo.getPriority());
     });
     todoElement.querySelector(".priority span").innerText = todo.getPriority();
-    todoElement.querySelector(".description").innerText = todo.description;
+    todoElement.querySelector(".description").innerText = todo.description || "[Edit to enter a description]";
     todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
     todoElement.querySelector(".details").style.display = "none";
     if (todo.isComplete()) {
@@ -132,7 +132,7 @@ export function displayProject(project) {
     const todoListDiv = document.querySelector("#todo-list");
     const todoList = project.getTodoList();
 
-    projectNameSpan.innerText = project.name;
+    projectNameSpan.innerText = project.name || "[Empty name]";
     todoListDiv.innerHTML = "";
 
     for (const [_, todo] of Object.entries(todoList)) {
