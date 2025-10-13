@@ -4,16 +4,16 @@ import { Todo } from "./js/todo";
 import { Project } from "./js/project";
 import { appendTodo, retrieveFormData, editTodo, appendProject, displayProject, editProject, deleteProjectFromDOM } from "./js/dom-manager";
 import { DateManager } from "./js/date-manager";
+import { storeProject, storeTodo, retrieveProjects, storeCurrentProjectId, retrieveCurrentProjectId, updateTodo, updateProject, deleteProject } from "./js/storage-manager";
 
 class Application {
-    #projects = {};
+    #projects;
     #defaultProject;
     #sampleTodos;
     #currentProject;
 
     constructor(defaultProject, sampleTodos=null) {
         this.#defaultProject = defaultProject;
-        this.handleAddProject(defaultProject);
         this.#currentProject = defaultProject;
         this.#sampleTodos = sampleTodos;
     }
@@ -25,9 +25,8 @@ class Application {
 
         this.#sampleTodos.forEach((todo) => {
             project.addTodo(todo);
+            storeTodo(todo, project);
         });
-
-        displayProject(project);
     }
 
     handleAddTodo(project) {
@@ -42,8 +41,9 @@ class Application {
                 DateManager.getCurrentDate();
         
         const todo = new Todo(title, description, priority, dueDate);
-        appendTodo(todo);
         project.addTodo(todo);
+        appendTodo(todo, project);
+        storeTodo(todo, project);
     }
 
     handleEditTodo(project, id) {
@@ -62,6 +62,7 @@ class Application {
         todo.description = description;
         todo.setDueDate(dueDate);
         todo.setPriority(priority);
+        updateTodo(todo);
         editTodo(todo);
     }
 
@@ -73,29 +74,40 @@ class Application {
         }
 
         const projectElement = appendProject(project);
+
         this.#projects[project.getId()] = project;
 
         projectElement.addEventListener("click", () => {
             this.#currentProject = project;
+            storeCurrentProjectId(this.#currentProject.getId());
             displayProject(project);
         });
+
+        storeProject(project);
     }
 
     handleEditProject(project) {
         const formData = retrieveFormData("#edit-project-form");
         let name = formData.get("name") || "[Empty name]";
         project.name = name;
+        updateProject(project);
         editProject(project);
         displayProject(project);
     }
 
     handleDeleteProject(project) {
+        deleteProject(project);
         deleteProjectFromDOM(project);
         delete this.#projects[project.getId()];
 
         // Switch to some other project if exists
-        const someProject = Object.values(this.#projects)[0];
-        if (someProject) displayProject(someProject);
+        this.#currentProject = Object.values(this.#projects)[0];
+        if (this.#currentProject) { 
+            storeCurrentProjectId(this.#currentProject.getId());
+            displayProject(this.#currentProject);
+        } else {
+            storeCurrentProjectId(null);
+        }
     }
 
     configureEventListeners() {
@@ -154,11 +166,40 @@ class Application {
     }
 
     initialize() {
-        this.configureEventListeners();
+        this.#projects = retrieveProjects();
 
-        if (this.#sampleTodos) {
-            this.addSampleTodos(this.#defaultProject);
+        if (this.#projects === null) {
+            this.#projects = {};
+            this.handleAddProject(this.#defaultProject);
+
+            if (this.#sampleTodos) {
+                this.addSampleTodos(this.#defaultProject);
+            }
+
+            storeCurrentProjectId(this.#defaultProject.getId());
+            displayProject(this.#defaultProject);
         }
+        else {            
+            for (const project of Object.values(this.#projects)) {
+                const todoList = project.getTodoList();
+                const projectElement = appendProject(project);
+                this.#currentProject = project;
+                
+                projectElement.addEventListener("click", () => {
+                    this.#currentProject = project;
+                    storeCurrentProjectId(this.#currentProject.getId());
+                    displayProject(project);
+                });
+                
+                for (const todo of Object.values(todoList)) {
+                    appendTodo(todo, project);
+                }
+            }
+            this.#currentProject = this.#projects[retrieveCurrentProjectId()];
+            displayProject(this.#currentProject);
+        }
+
+        this.configureEventListeners();
     }
 }
 
@@ -171,5 +212,6 @@ sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - ne
 sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, DateManager.getCurrentDate()));
 sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, DateManager.getCurrentDate()));
 
-const application = new Application(defaultProject, sampleTodos);
+// clearStorage();
+const application = new Application(defaultProject);
 application.initialize();

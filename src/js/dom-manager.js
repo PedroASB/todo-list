@@ -4,8 +4,8 @@ import collapseIcon from "../assets/icons/collapse-icon.svg";
 import editIcon from "../assets/icons/edit-icon.svg";
 import deleteIcon from "../assets/icons/delete-icon.svg";
 import { Todo } from "./todo";
-import { Project } from "./project";
 import { DateManager } from "./date-manager";
+import { deleteTodo } from "./storage-manager";
 
 export function retrieveFormData(formSelector) {
     const form = document.querySelector(formSelector);
@@ -52,7 +52,7 @@ export function deleteProjectFromDOM(project) {
     projectElement.remove();
 }
 
-export function appendTodo(todo) {
+export function appendTodo(todo, project) {
     const todoListDiv = document.querySelector("#todo-list");
     const todoTemplate = document.querySelector("#todo-template");
     const todoElement = todoTemplate.content.cloneNode(true).querySelector(".todo");
@@ -72,13 +72,16 @@ export function appendTodo(todo) {
     todoElement.querySelector(".details").style.display = "none";
 
     // Event Listeners
-    todoElement.querySelector(".expand-collapse-icon").addEventListener("click", 
-        () => { toggleDetails(todoElement); }
-    );
+    todoElement.querySelector(".expand-collapse-icon").addEventListener("click", () => {
+        toggleDetails(todoElement);
+    });
     
-    todoElement.querySelector(".delete-icon").addEventListener("click", 
-        () => { todoElement.remove(); }
-    );
+    todoElement.querySelector(".delete-icon").addEventListener("click", () => {
+        project.deleteTodo(todo.getId());
+
+        deleteTodo(todo, project);
+        todoElement.remove();
+    });
 
     todoElement.querySelector(".edit-icon").addEventListener("click", () => {
         const form = document.querySelector("#edit-todo-form");
@@ -94,6 +97,12 @@ export function appendTodo(todo) {
     });
 
     todoListDiv.appendChild(todoElement);
+
+    return todoElement;
+}
+
+export function removeFromDOM(element) {
+    element.remove();
 }
 
 export function displayProject(project) {
@@ -105,7 +114,7 @@ export function displayProject(project) {
     todoListDiv.innerHTML = "";
 
     for (const [_, todo] of Object.entries(todoList)) {
-        appendTodo(todo);
+        appendTodo(todo, project);
     }   
 }
 

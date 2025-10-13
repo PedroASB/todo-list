@@ -1,14 +1,16 @@
 export class Todo {
     #priority;
     #dueDate;
-    #complete = false;
-    #id = crypto.randomUUID();
+    #complete;
+    #id;
 
-    constructor(title, description, priority, dueDate) {
+    constructor(title, description, priority, dueDate, complete=false, id=crypto.randomUUID()) {
         this.title = title;
         this.description = description;
         this.setPriority(priority);
         this.setDueDate(dueDate);
+        this.#complete = complete;
+        this.#id = id;
     }
 
     static getPriorityColor(priority) {
@@ -51,5 +53,22 @@ export class Todo {
             return; // Error
         }
         this.#dueDate = date.toISOString();
+    }
+
+    toJSON() {
+        return {
+            "title": this.title, 
+            "description": this.description,
+            "complete": this.#complete,
+            "priority": this.#priority,
+            "dueDate": this.#dueDate,
+            "id": this.#id
+        };
+    }
+
+    static fromJSON(json) {
+        const todoStoraged = JSON.parse(json);
+        const {title, description, priority, dueDate, complete, id} = todoStoraged;
+        return new Todo(title, description, priority, new Date(dueDate), complete, id);
     }
 }

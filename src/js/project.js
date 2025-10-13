@@ -1,12 +1,13 @@
 import { Todo } from "./todo";
 
 export class Project {
-    #todoList = {};
-    #size = 0;
-    #id = crypto.randomUUID();
+    #todoList;
+    #id;
 
-    constructor(name) {
+    constructor(name, todoList={}, id=crypto.randomUUID()) {
         this.name = name;
+        this.#todoList = todoList;
+        this.#id = id;
     }
 
     getId() {
@@ -18,18 +19,14 @@ export class Project {
     }
     
     getSize() {
-        return this.#size;
+        return Object.keys(this.#todoList).length;
     }
 
     addTodo(todo) {
         if (!(todo instanceof Todo)) {
             return; // Error
         }
-        if (todo.getId() in this.#todoList) {
-            return; // Already has this todo
-        }
         this.#todoList[todo.getId()] = todo;
-        this.#size++;
     }
 
     getTodo(id) {
@@ -38,6 +35,25 @@ export class Project {
 
     deleteTodo(id) {
         delete this.#todoList[id];
-        this.#size--;
+    }
+
+    toJSON() {
+        return {
+            "name": this.name,
+            "id": this.#id,
+            "todoIds": Object.keys(this.#todoList)
+        };
+    }
+
+    static fromJSON(json) {
+        const projectStoraged = JSON.parse(json);
+        const {name, id, todoIds} = projectStoraged;
+        const todoList = {};
+
+        todoIds.forEach((id) => {
+            todoList[id] = null;
+        });
+
+        return new Project(name, todoList, id);
     }
 }
