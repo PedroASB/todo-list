@@ -15,6 +15,11 @@ export function retrieveFormData(formSelector) {
     return formData;
 }
 
+export function clearForm(formSelector) {
+    const form = document.querySelector(formSelector);
+    form.reset();
+}
+
 export function toggleDetails(todoElement) {
     const detailsDiv = todoElement.querySelector(".details");
     const togglerIcon = todoElement.querySelector(".expand-collapse-icon");

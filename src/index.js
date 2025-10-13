@@ -2,7 +2,7 @@ import "./css/reset.css";
 import "./css/style.css";
 import { Todo } from "./js/todo";
 import { Project } from "./js/project";
-import { appendTodo, retrieveFormData, editTodo, appendProject, displayProject, editProject, deleteProjectFromDOM } from "./js/dom-manager";
+import { appendTodo, retrieveFormData, editTodo, appendProject, displayProject, editProject, deleteProjectFromDOM, clearForm } from "./js/dom-manager";
 import { DateManager } from "./js/date-manager";
 import { storeProject, storeTodo, retrieveProjects, storeCurrentProjectId, retrieveCurrentProjectId, updateTodo, updateProject, deleteProject } from "./js/storage-manager";
 
@@ -20,7 +20,7 @@ class Application {
 
     addSampleTodos(project) {
         if (!this.#sampleTodos) {
-            return; // Error
+            return;
         }
 
         this.#sampleTodos.forEach((todo) => {
@@ -127,6 +127,7 @@ class Application {
             if (addTodoDialog.returnValue === "confirm") {
                 this.handleAddTodo(this.#currentProject);
             }
+            clearForm("form#add-todo-form");
         });
     
         addProjectButton.addEventListener("click", () => {
@@ -137,6 +138,7 @@ class Application {
             if (addProjectDialog.returnValue === "confirm") {
                 this.handleAddProject();
             }
+            clearForm("form#add-project-form");
         });
 
         editTodoDialog.addEventListener("close", () => {
@@ -212,5 +214,5 @@ sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - ne
 sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, DateManager.getCurrentDate()));
 sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, DateManager.getCurrentDate()));
 
-const application = new Application(defaultProject);
+const application = new Application(defaultProject, sampleTodos);
 application.initialize();
