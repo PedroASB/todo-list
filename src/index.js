@@ -3,7 +3,7 @@ import "./css/style.css";
 import { Todo } from "./js/todo";
 import { Project } from "./js/project";
 import { appendTodo, retrieveFormData, editTodo, appendProject, displayProject, editProject, deleteProjectFromDOM, clearForm } from "./js/dom-manager";
-import { DateManager } from "./js/date-manager";
+import { getDateFromString, getCurrentDate } from "./js/date-manager";
 import { storeProject, storeTodo, retrieveProjects, storeCurrentProjectId, retrieveCurrentProjectId, updateTodo, updateProject, deleteProject } from "./js/storage-manager";
 
 class Application {
@@ -37,8 +37,8 @@ class Application {
         description = formData.get("description") || "";
         priority = +formData.get("priority") || 1;
         dueDate = formData.get("date") ? 
-                DateManager.getDateFromString(formData.get("date")) : 
-                DateManager.getCurrentDate();
+                getDateFromString(formData.get("date")) : 
+                getCurrentDate();
         
         const todo = new Todo(title, description, priority, dueDate);
         project.addTodo(todo);
@@ -55,8 +55,8 @@ class Application {
         description = formData.get("description") || "";
         priority = +formData.get("priority") || 1;
         dueDate = formData.get("date") ? 
-                DateManager.getDateFromString(formData.get("date")) : 
-                DateManager.getCurrentDate();
+                getDateFromString(formData.get("date")) : 
+                getCurrentDate();
 
         todo.title = title;
         todo.description = description;
@@ -210,9 +210,9 @@ class Application {
 const defaultProject = new Project("My Tasks");
 let sampleTodos = [];
 
-sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - next to the shopping mall.", 3, DateManager.getCurrentDate()));
-sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, DateManager.getCurrentDate()));
-sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, DateManager.getCurrentDate()));
+sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - next to the shopping mall.", 3, getCurrentDate()));
+sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, getCurrentDate()));
+sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, getCurrentDate()));
 
 const application = new Application(defaultProject, sampleTodos);
 application.initialize();

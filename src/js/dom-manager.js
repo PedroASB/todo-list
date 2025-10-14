@@ -5,7 +5,7 @@ import collapseIcon from "../assets/icons/collapse-icon.svg";
 import editIcon from "../assets/icons/edit-icon.svg";
 import deleteIcon from "../assets/icons/delete-icon.svg";
 import { Todo } from "./todo";
-import { DateManager } from "./date-manager";
+import { formatDate } from "./date-manager";
 import { deleteTodo, updateTodo } from "./storage-manager";
 
 export function retrieveFormData(formSelector) {
@@ -48,7 +48,7 @@ export function editTodo(todo) {
     });
     todoElement.querySelector(".priority span").innerText = todo.getPriority();
     todoElement.querySelector(".description").innerText = todo.description || "[Edit to enter a description]";
-    todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
+    todoElement.querySelector(".date span").innerText = formatDate(todo.getDueDate(), "MM/dd/yyyy");
 }
 
 export function editProject(project) {
@@ -79,7 +79,7 @@ export function appendTodo(todo, project) {
     });
     todoElement.querySelector(".priority span").innerText = todo.getPriority();
     todoElement.querySelector(".description").innerText = todo.description || "[Edit to enter a description]";
-    todoElement.querySelector(".date span").innerText = DateManager.formatDate(todo.getDueDate(), "MM/dd/yyyy");
+    todoElement.querySelector(".date span").innerText = formatDate(todo.getDueDate(), "MM/dd/yyyy");
     todoElement.querySelector(".details").style.display = "none";
     if (todo.isComplete()) {
         todoElement.querySelector('input[type="checkbox"]').checked = true;
@@ -105,7 +105,7 @@ export function appendTodo(todo, project) {
         form.elements.title.value = todo.title;
         form.elements.description.value = todo.description;
         form.elements.priority[todo.getPriority() - 1].checked = true;
-        form.elements.date.value = DateManager.formatDate(todo.getDueDate(), "yyyy-MM-dd");
+        form.elements.date.value = formatDate(todo.getDueDate(), "yyyy-MM-dd");
 
         editTodoDialog.triggerElement = todoElement;
         editTodoDialog.showModal();
