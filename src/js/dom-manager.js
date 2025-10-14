@@ -4,7 +4,7 @@ import expandIcon from "../assets/icons/expand-icon.svg";
 import collapseIcon from "../assets/icons/collapse-icon.svg";
 import editIcon from "../assets/icons/edit-icon.svg";
 import deleteIcon from "../assets/icons/delete-icon.svg";
-import { Todo } from "./todo";
+import Todo from "./todo";
 import { formatDate } from "./date-manager";
 import { deleteTodo, updateTodo } from "./storage-manager";
 

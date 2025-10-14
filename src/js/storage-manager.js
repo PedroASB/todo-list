@@ -1,5 +1,5 @@
-import { Project } from "./project";
-import { Todo } from "./todo";
+import Project from "./project";
+import Todo from "./todo";
 
 export function storeCurrentProjectId(projectId) {
     const key = "current-project";

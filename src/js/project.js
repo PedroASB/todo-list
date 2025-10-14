@@ -1,6 +1,6 @@
-import { Todo } from "./todo";
+import Todo from "./todo";
 
-export class Project {
+export default class Project {
     #todoList;
     #id;
 

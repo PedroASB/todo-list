@@ -1,7 +1,7 @@
 import "./css/reset.css";
 import "./css/style.css";
-import { Todo } from "./js/todo";
-import { Project } from "./js/project";
+import Todo from "./js/todo";
+import Project from "./js/project";
 import { appendTodo, retrieveFormData, editTodo, appendProject, displayProject, editProject, deleteProjectFromDOM, clearForm } from "./js/dom-manager";
 import { getDateFromString, getCurrentDate } from "./js/date-manager";
 import { storeProject, storeTodo, retrieveProjects, storeCurrentProjectId, retrieveCurrentProjectId, updateTodo, updateProject, deleteProject } from "./js/storage-manager";
