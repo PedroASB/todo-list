@@ -1,75 +1,85 @@
 import Project from "./project";
 import Todo from "./todo";
 
-export function storeCurrentProjectId(projectId) {
-    const key = "current-project";
-    const value = JSON.stringify(projectId);
-    localStorage.setItem(key, value);
+const todoKey = id => `todo:${id}`;
+const projectKey = id => `project:${id}`;
+const currentProjectKey = "current-project";
+const projectsDataKey = "projects";
+
+/* Get (Serialized Data) */
+function getProjectsData() {
+    return JSON.parse(localStorage.getItem(projectsDataKey));
 }
 
-export function storeProject(project) {
-    const key = `project:${project.getId()}`;
-    const value = JSON.stringify(project);
-    localStorage.setItem(key, value);
+function getProjectData(projectId) {
+    return JSON.parse(localStorage.getItem(projectKey(projectId)));
+}
 
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
-    projects.push(project.getId());
-    localStorage.setItem("projects", JSON.stringify(projects));
+/* Update */
+
+export function updateTodo(todo) {
+    localStorage.setItem(todoKey(todo.getId()), JSON.stringify(todo));
 }
 
 export function updateProject(project) {
-    const key = `project:${project.getId()}`;
-    const value = JSON.stringify(project);
-    localStorage.setItem(key, value);
+    localStorage.setItem(projectKey(project.getId()), JSON.stringify(project));
+}
+
+function updateProjectsData(projectsData) {
+    localStorage.setItem(projectsDataKey, JSON.stringify(projectsData));
+}
+
+function updateProjectData(projectId, projectData) {
+    localStorage.setItem(projectKey(projectId), JSON.stringify(projectData));
+}
+
+/* Store */
+
+export function storeTodo(todo, project) {
+    const projectData = getProjectData(project.getId());
+    projectData.todoIds.push(todo.getId());
+    updateProjectData(project.getId(), projectData);
+    updateTodo(todo);
+}
+
+export function storeProject(project) {
+    const projectsData = getProjectsData() || [];
+    projectsData.push(project.getId());
+    updateProjectsData(projectsData);
+    updateProject(project);
+}
+
+export function storeCurrentProjectId(projectId) {
+    localStorage.setItem(currentProjectKey, JSON.stringify(projectId));
+}
+
+/* Delete */
+
+export function deleteTodo(todo, project) {
+    localStorage.removeItem(todoKey(todo.getId()));
+    const projectData = getProjectData(project.getId());
+    projectData.todoIds = projectData.todoIds.filter((id) => id !== todo.getId());
+    updateProjectData(project.getId(), projectData);
 }
 
 export function deleteProject(project) {
-    
     for (const todo of Object.values(project.getTodoList())) {
-        // deleteTodo(todo, project);
-        const key = `todo:${todo.getId()}`;
-        localStorage.removeItem(key);
+        localStorage.removeItem(todoKey(todo.getId()));
     }
-    
-    const key = `project:${project.getId()}`;
-    localStorage.removeItem(key);
-    
-    let projects = JSON.parse(localStorage.getItem("projects"));
-    projects = projects.filter((id) => id !== project.getId());
-    localStorage.setItem("projects", JSON.stringify(projects));
+    localStorage.removeItem(projectKey(project.getId()));
+    let projectsData = getProjectsData();   
+    projectsData = projectsData.filter((id) => id !== project.getId());
+    updateProjectsData(projectsData);
 }
 
-export function storeTodo(todo, project) {
-    const key = `todo:${todo.getId()}`;
-    const value = JSON.stringify(todo);
-    localStorage.setItem(key, value);
-
-    const projectStorage = JSON.parse(localStorage.getItem(`project:${project.getId()}`));
-    projectStorage.todoIds.push(todo.getId());
-    localStorage.setItem(`project:${project.getId()}`, JSON.stringify(projectStorage));
-}
-
-export function updateTodo(todo) {
-    const key = `todo:${todo.getId()}`;
-    const value = JSON.stringify(todo);
-    localStorage.setItem(key, value);
-}
-
-export function deleteTodo(todo, project) {
-    const key = `todo:${todo.getId()}`;
-    localStorage.removeItem(key);
-
-    const projectStorage = JSON.parse(localStorage.getItem(`project:${project.getId()}`));
-    projectStorage.todoIds = projectStorage.todoIds.filter((id) => id !== todo.getId());
-    localStorage.setItem(`project:${project.getId()}`, JSON.stringify(projectStorage));
-}
+/* Retrieve (Objects & Application Data) */
 
 export function retrieveTodo(todoId) {
-    return Todo.fromJSON(localStorage.getItem(`todo:${todoId}`))
+    return Todo.fromJSON(localStorage.getItem(todoKey(todoId)));
 }
 
 export function retrieveProject(projectId) {
-    const project = Project.fromJSON(localStorage.getItem(`project:${projectId}`));
+    const project = Project.fromJSON(localStorage.getItem(projectKey(projectId)));
     const todoIds = Object.keys(project.getTodoList());
 
     todoIds.forEach((id) => {
@@ -81,24 +91,25 @@ export function retrieveProject(projectId) {
 }
 
 export function retrieveCurrentProjectId() {
-    return JSON.parse(localStorage.getItem("current-project"));
+    return JSON.parse(localStorage.getItem(currentProjectKey));
 }
 
 export function retrieveProjects() {
-    const projectsStored = JSON.parse(localStorage.getItem("projects"));
-    
-    if (!projectsStored) {
+    const projectsData = JSON.parse(localStorage.getItem(projectsDataKey));
+
+    if (!projectsData) {
         return null;
     }
-    
-    const projects = {};
 
-    projectsStored.forEach((id) => {
+    const projects = {};
+    projectsData.forEach((id) => {
         projects[id] = retrieveProject(id);
     });
 
     return projects;
 }
+
+/* Extra */
 
 export function clearStorage() {
     localStorage.clear();
