@@ -2,9 +2,9 @@ import "./css/reset.css";
 import "./css/style.css";
 import Todo from "./js/todo";
 import Project from "./js/project";
-import { appendTodo, retrieveFormData, editTodo, appendProject, displayProject, editProject, deleteProjectFromDOM, clearForm } from "./js/dom-manager";
+import * as DOMTreeManager from "./js/dom-manager";
+import * as StorageManager from "./js/storage-manager";
 import { getDateFromString, getCurrentDate } from "./js/date-manager";
-import { storeProject, storeTodo, retrieveProjects, storeCurrentProjectId, retrieveCurrentProjectId, updateTodo, updateProject, deleteProject } from "./js/storage-manager";
 
 class Application {
     #projects;
@@ -12,112 +12,166 @@ class Application {
     #sampleTodos;
     #currentProject;
 
-    constructor(defaultProject, sampleTodos=null) {
-        this.#defaultProject = defaultProject;
-        this.#currentProject = defaultProject;
+    constructor(defaultProjectName, sampleTodos=null) {
+        this.#defaultProject = new Project(defaultProjectName);
         this.#sampleTodos = sampleTodos;
     }
 
-    addSampleTodos(project) {
-        if (!this.#sampleTodos) {
-            return;
-        }
+    /* Todos */
 
+    #addSampleTodos(project) {
+        if (!this.#sampleTodos) return;
         this.#sampleTodos.forEach((todo) => {
             project.addTodo(todo);
-            storeTodo(todo, project);
+            StorageManager.storeTodo(todo, project);
         });
     }
 
-    handleAddTodo(project) {
-        const formData = retrieveFormData("form#add-todo-form");
-        let title, description, priority, dueDate;
+    #readTodoForm(form) {
+        const formData = DOMTreeManager.retrieveFormData(form);
+        const title = formData.get("title") || "";
+        const description = formData.get("description") || "";
+        const priority = +formData.get("priority") || 1;
+        const dueDate = formData.get("date") ? getDateFromString(formData.get("date")) : getCurrentDate();
 
-        title = formData.get("title") || "";
-        description = formData.get("description") || "";
-        priority = +formData.get("priority") || 1;
-        dueDate = formData.get("date") ? 
-                getDateFromString(formData.get("date")) : 
-                getCurrentDate();
-        
-        const todo = new Todo(title, description, priority, dueDate);
-        project.addTodo(todo);
-        appendTodo(todo, project);
-        storeTodo(todo, project);
+        return {title, description, priority, dueDate};
     }
 
-    handleEditTodo(project, id) {
-        const formData = retrieveFormData("#edit-todo-form");
-        let title, description, priority, dueDate;
-        const todo = project.getTodo(id);
+    #addTodoToDOM(todo, project) {
+        DOMTreeManager.addTodo(
+            todo, 
+            {
+                onDeleteTodo: () => { this.#handleDeleteTodo(todo, project); },
+                onCheckTodo: () => { this.#handleCheckboxClick(todo); }
+            }
+        );
+    }
 
-        title = formData.get("title") || "";
-        description = formData.get("description") || "";
-        priority = +formData.get("priority") || 1;
-        dueDate = formData.get("date") ? 
-                getDateFromString(formData.get("date")) : 
-                getCurrentDate();
+    #handleAddTodo(project) {
+        const form = DOMTreeManager.getAddTodoForm();
+        const {title, description, priority, dueDate} = this.#readTodoForm(form);
+        const todo = new Todo(title, description, priority, dueDate);
+
+        project.addTodo(todo);
+        StorageManager.storeTodo(todo, project);
+        this.#addTodoToDOM(todo, project);
+    }
+
+    #handleEditTodo(project, id) {
+        const todo = project.getTodo(id);
+        const form = DOMTreeManager.getEditTodoForm();
+        const {title, description, priority, dueDate} = this.#readTodoForm(form);
 
         todo.title = title;
         todo.description = description;
         todo.setDueDate(dueDate);
         todo.setPriority(priority);
-        updateTodo(todo);
-        editTodo(todo);
+
+        StorageManager.updateTodo(todo);
+        DOMTreeManager.updateTodo(todo);
     }
 
-    handleAddProject(project=null) {
+    #handleDeleteTodo(todo, project) {
+        project.deleteTodo(todo.getId());
+        StorageManager.deleteTodo(todo, project);
+    }
+
+    #handleCheckboxClick(todo) {
+        todo.toggleComplete();
+        StorageManager.updateTodo(todo);
+    }
+
+    /* Projects */
+
+    #storeCurrentProjectId() {
+        StorageManager.storeCurrentProjectId(this.#currentProject.getId());
+    }
+
+    #readProjectForm(form) {
+        const formData = DOMTreeManager.retrieveFormData(form);
+        const name = formData.get("name") || "";
+        return {name};
+    }
+
+    #addProjectToDOM(project) {
+        DOMTreeManager.addProject(
+            project,
+            {
+                onClick: () => { this.#handleProjectCardClick(project); }
+            }
+        );
+    }
+
+    #displayTodosFromTodoList(project) {
+        for (const [_, todo] of Object.entries(project.getTodoList())) {
+            this.#addTodoToDOM(todo, project);
+        } 
+    }
+
+    #displayCurrentProject() {
+        DOMTreeManager.displayProject(
+            this.#currentProject,
+            () => { this.#displayTodosFromTodoList(this.#currentProject); }
+        );
+    }
+
+    #handleAddProject(project=null) {
         if (project === null) {
-            const formData = retrieveFormData("form#add-project-form");
-            let name = formData.get("name") || "";
+            const form = DOMTreeManager.getAddProjectForm();
+            const {name} = this.#readProjectForm(form);
             project = new Project(name);
         }
 
-        const projectElement = appendProject(project);
-
         this.#projects[project.getId()] = project;
-
-        projectElement.addEventListener("click", () => {
-            this.#currentProject = project;
-            storeCurrentProjectId(this.#currentProject.getId());
-            displayProject(project);
-        });
-
-        storeProject(project);
+        StorageManager.storeProject(project);
+        this.#addProjectToDOM(project);
     }
 
-    handleEditProject(project) {
-        const formData = retrieveFormData("#edit-project-form");
-        let name = formData.get("name") || "";
+    #handleEditProject(project) {
+        const form = DOMTreeManager.getEditProjectForm();
+        const {name} = this.#readProjectForm(form);
         project.name = name;
-        updateProject(project);
-        editProject(project);
-        displayProject(project);
+    
+        StorageManager.updateProject(project);
+        DOMTreeManager.updateProject(project);
     }
 
-    handleDeleteProject(project) {
-        deleteProject(project);
-        deleteProjectFromDOM(project);
+    #handleDeleteProject(project) {
         delete this.#projects[project.getId()];
+        StorageManager.deleteProject(project);
+        DOMTreeManager.removeProject(project);
 
         // Switch to some other project if exists
         this.#currentProject = Object.values(this.#projects)[0];
         if (this.#currentProject) { 
-            storeCurrentProjectId(this.#currentProject.getId());
-            displayProject(this.#currentProject);
+            this.#storeCurrentProjectId();
+            this.#displayCurrentProject();
         } else {
-            storeCurrentProjectId(null);
+            StorageManager.storeCurrentProjectId(null);
         }
     }
 
-    configureEventListeners() {
-        const addTodoButton = document.querySelector("#add-todo");
-        const addTodoDialog = document.querySelector("#add-todo-dialog");
-        const addProjectButton = document.querySelector("#add-project");
-        const addProjectDialog = document.querySelector("#add-project-dialog");
-        const editTodoDialog = document.querySelector("#edit-todo-dialog");
-        const editProjectButton = document.querySelector("#edit-project");
-        const editProjectDialog = document.querySelector("#edit-project-dialog");
+    #handleProjectCardClick(project) {
+        this.#currentProject = project;
+        this.#storeCurrentProjectId();
+        DOMTreeManager.displayProject(
+            project,
+            () => { this.#displayTodosFromTodoList(project); }
+        );
+    }
+
+    /* Initialization */
+
+    #configureEventListeners() {
+        const addTodoButton = DOMTreeManager.getAddTodoButton();
+        const addTodoDialog = DOMTreeManager.getAddTodoDialog();
+        const editTodoDialog = DOMTreeManager.getEditTodoDialog();
+        const addProjectButton = DOMTreeManager.getAddProjectButton();
+        const addProjectDialog = DOMTreeManager.getAddProjectDialog();
+        const editProjectButton = DOMTreeManager.getEditProjectButton();
+        const editProjectDialog = DOMTreeManager.getEditProjectDialog();
+
+        // Todo
         
         addTodoButton.addEventListener("click", () => {
             addTodoDialog.showModal();
@@ -125,41 +179,43 @@ class Application {
         
         addTodoDialog.addEventListener("close", () => {
             if (addTodoDialog.returnValue === "confirm") {
-                this.handleAddTodo(this.#currentProject);
+                this.#handleAddTodo(this.#currentProject);
             }
-            clearForm("form#add-todo-form");
+            DOMTreeManager.clearForm(DOMTreeManager.getAddTodoForm());
         });
     
+        editTodoDialog.addEventListener("close", () => {
+            if (editTodoDialog.returnValue === "confirm") {
+                this.#handleEditTodo(this.#currentProject, editTodoDialog.triggerElement.dataset.id);
+            }
+        });
+
+        // Project
+
         addProjectButton.addEventListener("click", () => {
             addProjectDialog.showModal();
         });
 
         addProjectDialog.addEventListener("close", () => {
             if (addProjectDialog.returnValue === "confirm") {
-                this.handleAddProject();
+                this.#handleAddProject();
             }
-            clearForm("form#add-project-form");
-        });
-
-        editTodoDialog.addEventListener("close", () => {
-            if (editTodoDialog.returnValue === "confirm") {
-                this.handleEditTodo(this.#currentProject, editTodoDialog.triggerElement.dataset.id);
-            }
+            DOMTreeManager.clearForm(DOMTreeManager.getAddProjectForm());
         });
 
         editProjectButton.addEventListener("click", () => {
-            const form = document.querySelector("#edit-project-form");
+            const form = DOMTreeManager.getEditProjectForm();
             form.elements.name.value = this.#currentProject.name;
             editProjectDialog.showModal();
         });
 
         editProjectDialog.addEventListener("close", () => {
             if (editProjectDialog.returnValue === "confirm") {
-                this.handleEditProject(this.#currentProject);
+                this.#handleEditProject(this.#currentProject);
             }
             if (editProjectDialog.returnValue === "delete") {
                 if (Object.keys(this.#projects).length > 1) {
-                    this.handleDeleteProject(this.#currentProject);
+                    this.#handleDeleteProject(this.#currentProject);
                 } else {
                     window.alert("You must keep at least one project.");
                 }
@@ -167,52 +223,53 @@ class Application {
         });
     }
 
+    #performFirstInitialization() {
+        this.#projects = {};
+        this.#handleAddProject(this.#defaultProject);
+
+        // Add initial sample todos, if they have been declared
+        if (this.#sampleTodos) {
+            this.#addSampleTodos(this.#defaultProject);
+        }
+
+        this.#currentProject = this.#defaultProject;
+        this.#storeCurrentProjectId();
+        this.#displayCurrentProject();
+        this.#configureEventListeners();
+    }
+
     initialize() {
-        this.#projects = retrieveProjects();
+        this.#projects = StorageManager.retrieveProjects();
 
+        // Check if it's the first initialization of the application
         if (this.#projects === null) {
-            this.#projects = {};
-            this.handleAddProject(this.#defaultProject);
-
-            if (this.#sampleTodos) {
-                this.addSampleTodos(this.#defaultProject);
-            }
-
-            storeCurrentProjectId(this.#defaultProject.getId());
-            displayProject(this.#defaultProject);
-        }
-        else {            
-            for (const project of Object.values(this.#projects)) {
-                const todoList = project.getTodoList();
-                const projectElement = appendProject(project);
-                this.#currentProject = project;
-                
-                projectElement.addEventListener("click", () => {
-                    this.#currentProject = project;
-                    storeCurrentProjectId(this.#currentProject.getId());
-                    displayProject(project);
-                });
-                
-                for (const todo of Object.values(todoList)) {
-                    appendTodo(todo, project);
-                }
-            }
-            this.#currentProject = this.#projects[retrieveCurrentProjectId()];
-            displayProject(this.#currentProject);
+            this.#performFirstInitialization();
+            return;
         }
 
-        this.configureEventListeners();
+        for (const project of Object.values(this.#projects)) {
+            const todoList = project.getTodoList();
+            this.#addProjectToDOM(project);
+
+            for (const todo of Object.values(todoList)) {
+                this.#addTodoToDOM(todo, project);
+            }
+        }
+
+        this.#currentProject = this.#projects[StorageManager.retrieveCurrentProjectId()];
+        this.#displayCurrentProject();
+        this.#configureEventListeners();
     }
 }
 
 
-// Start application
-const defaultProject = new Project("My Tasks");
-let sampleTodos = [];
+/* Start application */
+const sampleTodos = [
+    new Todo("Dentist appointment", "Address: 12 Surrey Street - next to the shopping mall.", 3, getCurrentDate()),
+    new Todo("Water the houseplants", "Garden and backyard!", 2, getCurrentDate()),
+    new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, getCurrentDate())
+];
+const defaultProjectName = "My Tasks";
+const application = new Application(defaultProjectName, sampleTodos);
 
-sampleTodos.push(new Todo("Dentist appointment", "Address: 12 Surrey Street - next to the shopping mall.", 3, getCurrentDate()));
-sampleTodos.push(new Todo("Water the houseplants", "Garden and backyard!", 2, getCurrentDate()));
-sampleTodos.push(new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, getCurrentDate()));
-
-const application = new Application(defaultProject, sampleTodos);
 application.initialize();
