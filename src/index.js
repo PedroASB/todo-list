@@ -265,9 +265,10 @@ class Application {
 
 /* Start application */
 const sampleTodos = [
-    new Todo("Dentist appointment", "Address: 12 Surrey Street - next to the shopping mall.", 3, getCurrentDate()),
-    new Todo("Water the houseplants", "Garden and backyard!", 2, getCurrentDate()),
-    new Todo("Research vacation destinations", "Countries: France, Italy or England.", 1, getCurrentDate())
+    new Todo("Buy groceries for the week", "Milk, eggs, bread, rice, chicken and vegetables.", 3, getDateFromString("2025-10-15")),
+    new Todo("Clean up the workspace", "Organize desk, delete unused files, and back up important documents.", 1, getDateFromString("2025-10-22")),
+    new Todo("Finish project presentation", "Prepare slides and practice for next week's meeting.", 2, getDateFromString("2025-10-18")),
+    new Todo("Call the dentist", "Schedule a cleaning appointment for next week.", 1, getDateFromString("2025-10-20")),
 ];
 const defaultProjectName = "My Tasks";
 const application = new Application(defaultProjectName, sampleTodos);
