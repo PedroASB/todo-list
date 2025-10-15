@@ -7,6 +7,7 @@ const currentProjectKey = "current-project";
 const projectsDataKey = "projects";
 
 /* Get (Serialized Data) */
+
 function getProjectsData() {
     return JSON.parse(localStorage.getItem(projectsDataKey));
 }

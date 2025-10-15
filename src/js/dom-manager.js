@@ -123,8 +123,6 @@ export function addTodo(todo, {onDeleteTodo, onCheckTodo}) {
 
     // Append todo to the page
     todoListDiv.appendChild(todoCard);
-
-    return todoCard;
 }
 
 export function updateTodo(todo) {
